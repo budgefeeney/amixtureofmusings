@@ -1,0 +1,13 @@
+$partial("templates/top.html")$
+    <article itemscope>
+      <time datetime="$machinedate$" itemprop="datePublished">$humandate$</time>
+      <h1>$title$</h1>
+      $body$
+    </article>
+    <section>
+      <ul>
+        $if(previousPageUrl)$<li class="previous-page"><a href="$previousPageUrl$" title="Previous post: $previousTitle$" rel="prev">$previousTitle$</a></li>$endif$
+        $if(nextPageUrl)$<li class="next-page"><a href="$nextPageUrl$" title="Next post: $nextTitle$" rel="next">$nextTitle$</a></li>$endif$
+      </ul>
+    </section>
+$partial("templates/bottom.html")$
