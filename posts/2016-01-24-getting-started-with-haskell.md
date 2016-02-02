@@ -24,24 +24,20 @@ In recent times, the [Stackage](https://www.stackage.org) project has been launc
 
 The minimum version to target for GHC is 7.10, and for Cabal, it's 1.22.
 
-Users of Mac OS X will first need to ensure they have the command-line development-tools installed. To do this install XCode from the app-store, then on the command-line run the following.
+Users of Mac OS X will first need to ensure they have the command-line development-tools installed. To do this install XCode from the app-store, then on the command-line run the following (note the dashes).
 
 ```
 sudo xcode-select --install
 sudo xcodebuild -license
 ```
 
-Next, install the Haskell [Haskell Platform](https://www.haskell.org/platform/).
+Next, Mac users, and also Windows users, sholud install the [Haskell Platform](https://www.haskell.org/platform/).
 
-The [Haskell Platform](https://www.haskell.org/platform/) is also the best option for Windows users.
-
-For Linux users, the first option is obviously their native package manager, but if that doesn't have GHC 7.10, then they too should use the Haskell platform.
+For Linux users, of course, the first option is their native package manager; however if that doesn't have GHC 7.10, then they too should use the Haskell platform.
 
 Once done, you should have `ghc`, `ghci`, `runghc`, and `cabal` all on your path. GHC is the compiler obviously, `ghci` is a simple REPL, and `runghc` compiles and runs the given script.
 
-Cabal is a build & dependency-management tool similar to Maven, or
-
-The next step is just to update the Cabal package database to the latest version, using
+Cabal is a build & dependency-management tool similar to Maven for Java, but it can also install standalone executables. As a first step, you should ensure you have the latest version of Cabal itself installed. Type:
 
 ```
 cabal update
@@ -50,7 +46,7 @@ cabal install cabal cabal-install
 
 For those who are confused, [cabal](https://hackage.haskell.org/package/Cabal) is the library and [cabal-install](https://hackage.haskell.org/package/cabal-install) is the application called -- somewhat confusingly -- `cabal`.
 
-Cabal can also be used to install Haskell applications: when you execute the `cabal install ...` command above it will tell you where such applications will be installed: on Macs using the Haskell platform it's `$HOME/Library/Haskell/bin`. Make sure to update your path accordingly.
+When you execute the commands above it will tell you where all applications installed by typing `cabal install appname` will be placed on your filesystem. On Macs using the Haskell platform, it's `$HOME/Library/Haskell/bin`. Make sure to update your PATH environment variable accordingly.
 
 ### A Mac(Ports) Conundrum
 
