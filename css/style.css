@@ -154,14 +154,9 @@ li.text a:hover {
     text-shadow: 0pt 0.13em 0pt #4d1f00;
 }
 
-
-nav ul li img
-{
-    margin-top:30px
-    width: 24px;
-    height: 24px
+li.icon {
+  float:right
 }
-
 
 li.icon span {
   display: inline-block;
