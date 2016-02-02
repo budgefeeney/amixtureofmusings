@@ -146,10 +146,12 @@ nav ul li a
     padding-right: 1em;
 }
 
-nav ul li a:hover
-{
-    text-shadow: 0pt 0.13em 0pt #4d1f00;
+nav ul li a:hover {
     background-color: #e65c00;
+}
+
+li.text a:hover {
+    text-shadow: 0pt 0.13em 0pt #4d1f00;
 }
 
 
@@ -160,11 +162,34 @@ nav ul li img
     height: 24px
 }
 
-nav ul li.icon
-{
-    float: right;
-    margin-right: 0;
-    padding-right: 0;
+
+li.icon span {
+  display: inline-block;
+  color: transparent;
+  text-shadow: 0px 0px 0px transparent;
+  overflow-x: hidden;
+  width: 24px;
+  background: url(/images/social-icons.png) no-repeat left center
+}
+
+nav ul li a:hover span {
+  color: transparent
+}
+
+li#email span {
+  background-position: 0px;
+}
+
+li#github span {
+  background-position: -24px;
+}
+
+li#twitter span {
+  background-position: -72px;
+}
+
+li#linkedin span {
+  background-position: -48px;
 }
 
 nav ul li.icon a
