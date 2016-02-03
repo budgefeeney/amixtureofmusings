@@ -1,7 +1,6 @@
 ---
 title: Getting Started with Haskell
 date: 2016-01-23 13:00
-math: false
 draft: false
 tags: haskell
 ---
