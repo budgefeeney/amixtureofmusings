@@ -14,5 +14,19 @@
     </script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.3-latest/MathJax.js"></script>
     $endif$
+
+    $if(images)$
+    <script src="/scripts/echo.js"></script>
+    <script>
+    echo.init({
+      offset: 100,
+      throttle: 250,
+      unload: false,
+      callback: function (element, op) {
+        console.log(element, 'has been', op + 'ed')
+      }
+    });
+    </script>
+    $endif$
   </body>
 </html>

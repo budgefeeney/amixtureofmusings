@@ -4,9 +4,10 @@ module Site.Index (postIndex) where
 
 import Control.Monad (forM, forM_, liftM)
 import Data.List (sortBy)
-import Data.Maybe (catMaybes, isJust)
+import Data.Maybe (catMaybes)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
+import Data.Char (toUpper)
 import Data.Time.Format (defaultTimeLocale)
 import Hakyll
 import Site.Meta
@@ -24,13 +25,17 @@ mathField :: Bool -> Context a
 mathField True  = constField "math" "true"
 mathField False = missingField
 
+imagesField :: Bool -> Context a
+imagesField True  = constField "images" "true"
+imagesField False = missingField
+
 indexPageUrl :: Int -> FilePath
 indexPageUrl 1 = "/index.html"
 indexPageUrl i = "/page/" ++ show i ++ "/index.html"
 
 -- Post index has 'older' and 'newer' fields.
 postIndexContext :: Maybe FilePath -> Maybe FilePath -> Context String
-postIndexContext older newer = 
+postIndexContext older newer =
   mconcat $ catMaybes [fmap (constField "older") older, fmap (constField "newer") newer]
 
 paginatePosts :: Pattern -> Int -> (Maybe Int -> Int -> Maybe Int -> [Identifier] -> Rules ()) -> Rules ()
@@ -48,6 +53,15 @@ paginatePosts pattern n rules = do
                                      older = if i < lastIndex then Just (i + 1) else Nothing
                                  in  rules older i newer ps
 
+isTrue :: String -> Bool
+isTrue =
+    isTrueFromUpper . fmap toUpper
+  where
+    isTrueFromUpper "TRUE" = True
+    isTrueFromUpper "1"    = True
+    isTrueFromUpper "ON"   = True
+    isTrueFromUpper _      = False
+
 postIndex :: Pattern -> Int -> Context String -> Rules ()
 postIndex pattern nPages context =
   paginatePosts pattern nPages $ \older current newer ids -> do
@@ -57,14 +71,17 @@ postIndex pattern nPages context =
       create [identifier] $ do
         route idRoute
         compile $ do
-          posts <- forM ids $ \postId -> loadSnapshot postId "content"
-          maths <- forM ids $ \postId -> getMetadataField postId "math"
-          let useMath  = any isJust maths
+          posts  <- forM ids $ \postId -> loadSnapshot postId "content"
+          maths  <- forM ids $ \postId -> getMetadataField postId "math"
+          images <- forM ids $ \postId -> getMetadataField postId "images"
+          let useMath   = or (map isTrue  (catMaybes maths))
+              useImages = or (map isTrue  (catMaybes images))
               indexCtx = postsField (return posts) <>
                 postIndexContext olderUrl newerUrl <>
                 mathField useMath                  <>
+                imagesField useImages              <>
                 context
-        
+
           makeItem (indexPageUrl current)
             >>= loadAndApplyTemplate "templates/post-list.html" indexCtx
             >>= stripIndexSuffix

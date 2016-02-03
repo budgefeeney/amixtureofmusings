@@ -34,7 +34,7 @@ main = do
       compile compressCssCompiler
 
     sequence_ $ fmap staticFile
-      [ "fonts/*.woff", "fonts/*.png", "images/*", "favicon.png", ".htaccess" ]
+      [ "scripts/*", "images/*", "favicon.png", ".htaccess" ]
 
     match "templates/*" $ compile templateCompiler
 
@@ -57,7 +57,7 @@ main = do
           >>= loadAndApplyTemplate "templates/post.html" (postContext <> siteContext)
           >>= stripIndexSuffix
 
-    postIndex "posts/*.md" 2 fullContext
+    postIndex "posts/*.md" 5 fullContext
 
     create ["archive/index.html"] $ do
       route idRoute
