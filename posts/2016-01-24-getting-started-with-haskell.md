@@ -2,10 +2,10 @@
 title: Getting Started with Haskell
 date: 2016-01-23 13:00
 draft: false
-tags: haskell
+tags: Haskell, Programming
 ---
 
-This guide aims to help those attempting to learn Haskell. It explains:
+I've been playing around with Haskell recently as a way of clearing my head from the day job doing Python. It turns out getting a working setup is surprisingly difficult, so I've written this guide to help those attempting to learn Haskell get started. It explains:
 
 1. How to [install the Haskell compiler and development tools](#setting-up-haskell). The tools include `cabal` build & dependency-management app; the `ghc-mod` IDE support tool; the `stylish-haskell` code-formatter; and the `hi` ("Haskell init") project-scaffolding tool
 2. How to install and configure an [IDE](#installing-an-ide) and [REPL](#the-ihaskell-repl)
@@ -15,9 +15,7 @@ This guide aims to help those attempting to learn Haskell. It explains:
 
 There are some tips for Mac users in particular.
 
-While ostensibly straightforward, it takes a surprising amount of effort to install all of these: particularly to install the particular versions of each that work well together.
-
-In recent times, the [Stackage](https://www.stackage.org) project has been launched by the people at [FP Complete](http://www.fpcomplete.com) to address this. Similar to a Linux distribution, Stackage maintains a collection of particular Haskell libraries ("packages") and applications, at specific versions, which are all tested to not only be stable themselves, but stable with respect to each other. However as there is no IDE support for Stack at the moment, I won't discuss stack here.
+One of the problems with Haskell is determining how install the particular versions of each of these tools that work well together, as they can often conflict. In recent times, the [Stackage](https://www.stackage.org) project has been launched by the people at [FP Complete](http://www.fpcomplete.com) to address this. Similar to a Linux distribution, Stackage maintains a collection of particular Haskell libraries ("packages") and applications, at specific versions, which are all tested to not only be stable themselves, but stable with respect to each other. However as there is no IDE support for Stack at the moment, I won't discuss it here.
 
 ## Setting Up Haskell
 
@@ -185,7 +183,7 @@ This is a case where the best approach is to actually buy a book, in this case [
 
 Once you've learnt the core language, you will likely find  [What I wish I knew when learning Haskell](http://dev.stephendiehl.com/hask/) to be a useful read. It is a sort of Haskell-by-example, describing all the practical aspects of application development you need to be aware of. Particularly if you've learnt Haskell from [Learn You a Haskell (LYAH)](http://learnyouahaskell.com), this is the recommended next step.
 
-Also the [24 Days of ...](https://ocharles.org.uk/blog/) guides by Oliver Charles are a nice way of dipping in and out of various Haskell packages and extensions.
+Similarly the [24 Days of ...](https://ocharles.org.uk/blog/) guides by Oliver Charles offer a nice introduction to the various Haskell packages and extensions that are commonly used.
 
 
 ## Recommended Libraries
@@ -207,9 +205,9 @@ For common cases my recommendations are:
 
 * For **validation** [validate-input](https://hackage.haskell.org/package/validate-input) is easy to get up and running, but [validation](https://hackage.haskell.org/package/validation) is much more fully featured.
 
-* For **Extract-Transform-Load (ETL)** jobs use the [conduit](https://hackage.haskell.org/package/conduit) package
+* For **Extract-Transform-Load (ETL)** jobs use the [conduit](https://hackage.haskell.org/package/conduit) package.
 
-* For **error handling** most beginners use `Either`, but you should use the more abstract [errors](https://hackage.haskell.org/package/errors) approach instead. There is a [tutorial on the errors package here](http://www.haskellforall.com/2012/07/errors-10-simplified-error-handling.html), and a roundup of all the other approaches people have previously tried [here](http://blog.ezyang.com/2011/08/8-ways-to-report-errors-in-haskell-revisited/)
+* For **error handling** most beginners use `Either`, but some recommend the more abstract [errors](https://hackage.haskell.org/package/errors) approach instead. There is a [tutorial on the errors package here](http://www.haskellforall.com/2012/07/errors-10-simplified-error-handling.html), and a roundup of all the other approaches people have previously tried [here](http://blog.ezyang.com/2011/08/8-ways-to-report-errors-in-haskell-revisited/)
 
 * For **concurrency** there are many options, so the best advice is to read [this section on concurrency](http://dev.stephendiehl.com/hask/#concurrency) from [What I wish I knew when learning Haskell](http://dev.stephendiehl.com/hask/). In general usage, you'll probably find the [async library](https://hackage.haskell.org/package/async) the easiest to use. There's an [example here](http://dev.stephendiehl.com/hask/#async) and a short [tutorial here](https://ocharles.org.uk/blog/posts/2013-12-13-24-days-of-hackage-async.html).
 
