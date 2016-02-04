@@ -161,10 +161,15 @@ body > article:last-of-type, body > section
     border-bottom: none;
 }
 
-article > time
+article > time, article > span.tags
 {
     font-size: 0.9em;
     color: #929172;
+}
+
+article > span.tags {
+  font-family: 'Raleway', 'Droid Sans', 'Geneva', 'Calibri', sans-serif;
+  font-size: 0.8em;
 }
 
 article h1, article h2, article h3, article h4, article h5 {

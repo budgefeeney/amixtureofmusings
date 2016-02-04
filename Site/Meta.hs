@@ -3,6 +3,7 @@ module Site.Meta ( dateRoute
                  , filterDraftItems
                  , getYearContext
                  , postContext
+                 , postContextWithTags
                  , stripIndexSuffix
                  ) where
 
@@ -62,7 +63,14 @@ postContext =
   dateField  "humandate" "%e %B, %Y"  <>
   dateField  "machinedate" "%Y-%m-%d" <>
   dateField  "archivedate" "%e %B"    <>
-  dateField  "archiveyear" "%Y"
+  dateField  "archiveyear" "%Y"       <>
+  defaultContext
+
+
+postContextWithTags :: Tags -> Context String
+postContextWithTags tags =
+    tagsField "tags" tags <> postContext
+
 
 -- Extracts the year from a time.
 getYear :: UTCTime -> Integer

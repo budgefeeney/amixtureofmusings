@@ -48,14 +48,17 @@ main = do
           >>= loadAndApplyTemplate "templates/post.html" ctx
           >>= stripIndexSuffix
 
+    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+
     -- Drafts are not included by the paginate above, handle them manually.
     match "posts/*.md" $ do
       route dateRoute
       compile $
         pandocCompiler
           >>= saveSnapshot "content"
-          >>= loadAndApplyTemplate "templates/post.html" (postContext <> siteContext)
+          >>= loadAndApplyTemplate "templates/post.html" ((postContextWithTags tags) <> siteContext)
           >>= stripIndexSuffix
+
 
     postIndex "posts/*.md" 5 fullContext
 
@@ -66,6 +69,19 @@ main = do
         makeItem ""
           >>= loadAndApplyTemplate "templates/archive.html" ctx
           >>= stripIndexSuffix
+
+    tagsRules tags $ \tag pattern -> do
+      let title = "Posts tagged \"" ++ tag ++ "\""
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll pattern
+        let ctx = constField "title" title
+                  <> listField "posts" postContext (return posts)
+                  <> fullContext
+
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/tag.html" ctx
+          >>= relativizeUrls
 
     create ["feed.xml"] $ do
       route idRoute

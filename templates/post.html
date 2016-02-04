@@ -1,6 +1,7 @@
 $partial("templates/top.html")$
     <article itemscope>
       <time datetime="$machinedate$" itemprop="datePublished">$humandate$</time>
+      $if(tags)$<span class="tags">&nbsp;:&nbsp;$tags$</span>$endif$
       <h1>$title$</h1>
       $body$
     </article>

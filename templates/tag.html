@@ -1,0 +1,8 @@
+$partial("templates/top.html")$
+<article class="archive">
+  <h1>$title$</h1>
+  $for(posts)$
+  <p itemscope><time datetime="$machinedate$" itemprop="datePublished">$archivedate$</time> · <a href="$url$">$title$</a></p>
+  $endfor$
+</article>
+$partial("templates/bottom.html")$
