@@ -7,7 +7,7 @@ import Data.List (sortBy)
 import Data.Maybe (catMaybes)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
-import Data.Char (toUpper)
+import Data.Char (toUpper, isSpace)
 import Data.Time.Format (defaultTimeLocale)
 import Hakyll
 import Site.Meta
@@ -55,12 +55,15 @@ paginatePosts pattern n rules = do
 
 isTrue :: String -> Bool
 isTrue =
-    isTrueFromUpper . fmap toUpper
+    isTrueFromUpper . fmap toUpper . trim
   where
     isTrueFromUpper "TRUE" = True
     isTrueFromUpper "1"    = True
     isTrueFromUpper "ON"   = True
     isTrueFromUpper _      = False
+
+    trim = f . f
+      where f = reverse . dropWhile isSpace
 
 postIndex :: Pattern -> Int -> Context String -> Rules ()
 postIndex pattern nPages context =
