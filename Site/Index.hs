@@ -1,5 +1,7 @@
 {-- |
-  This module is concerned with FIXME
+  This module is concerned with initial, root, index page.
+  In particular it checks to enable MathJax and delayed
+  image loading if at least one of the posts requires them.
 -}
 {-# LANGUAGE OverloadedStrings #-}
 module Site.Index (postIndex) where
