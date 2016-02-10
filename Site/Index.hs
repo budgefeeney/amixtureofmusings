@@ -1,5 +1,7 @@
+{-- |
+  This module is concerned with FIXME
+-}
 {-# LANGUAGE OverloadedStrings #-}
-
 module Site.Index (postIndex) where
 
 import Control.Monad (forM, forM_, liftM)
@@ -7,7 +9,7 @@ import Data.List (sortBy)
 import Data.Maybe (catMaybes)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
-import Data.Char (toUpper, isSpace)
+import Data.Char (toUpper)
 import Data.Time.Format (defaultTimeLocale)
 import Hakyll
 import Site.Meta
@@ -62,9 +64,6 @@ isTrue =
     isTrueFromUpper "ON"   = True
     isTrueFromUpper _      = False
 
-    trim = f . f
-      where f = reverse . dropWhile isSpace
-
 postIndex :: Pattern -> Int -> Context String -> Rules ()
 postIndex pattern nPages context =
   paginatePosts pattern nPages $ \older current newer ids -> do
@@ -77,8 +76,8 @@ postIndex pattern nPages context =
           posts  <- forM ids $ \postId -> loadSnapshot postId "content"
           maths  <- forM ids $ \postId -> getMetadataField postId "math"
           images <- forM ids $ \postId -> getMetadataField postId "images"
-          let useMath   = or (map isTrue  (catMaybes maths))
-              useImages = or (map isTrue  (catMaybes images))
+          let useMath   = or (map isTrue (catMaybes maths))
+              useImages = or (map isTrue (catMaybes images))
               indexCtx = postsField (return posts) <>
                 postIndexContext olderUrl newerUrl <>
                 mathField useMath                  <>

@@ -9,12 +9,9 @@ import Site.Index
 import Site.Meta
 import Site.Pagination
 import Site.Pandoc
+import Text.Jasmine(minify)
 
-staticFile :: Pattern -> Rules ()
-staticFile pattern =
-  match pattern $ do
-    route idRoute
-    compile copyFileCompiler
+import qualified Data.ByteString.Lazy.Char8 as C
 
 main :: IO ()
 main = do
@@ -33,22 +30,28 @@ main = do
       route   idRoute
       compile compressCssCompiler
 
+    match "scripts/*.js" $ do
+      route   idRoute
+      compile minifyJSCompiler
+
     sequence_ $ fmap staticFile
-      [ "scripts/*", "images/*", "favicon.png", ".htaccess" ]
+      [ "images/*", "favicon.png", ".htaccess" ]
 
     match "templates/*" $ compile templateCompiler
+
+    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
 
     paginate <- buildPaginate "posts/*.md"
     paginateRules paginate $ \i _ -> do
       route dateRoute
       compile $ do
-        let ctx = paginatePostsContext paginate i <> siteContext
+        let ctx = postContextWithTags tags
+                  <> paginatePostsContext paginate i
+                  <> siteContext
         pandocCompiler
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/post.html" ctx
           >>= stripIndexSuffix
-
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
 
     -- Drafts are not included by the paginate above, handle them manually.
     match "posts/*.md" $ do
@@ -91,3 +94,18 @@ main = do
           >>= filterDraftItems
           >>= fmap (take 10) . recentFirst
           >>= renderAtom feedConfig feedContext
+
+-- | A Compiler which uses HJS-Min to minify Javascript
+minifyJSCompiler :: Compiler (Item [Char])
+minifyJSCompiler = do
+    s <- getResourceString
+    return $ itemSetBody (minifyJS s) s
+  where
+    minifyJS = C.unpack . minify . C.pack . itemBody
+
+-- | Applies an ID route and copyFileCompiler to the given pattern
+staticFile :: Pattern -> Rules ()
+staticFile pattern =
+  match pattern $ do
+    route idRoute
+    compile copyFileCompiler

@@ -1,3 +1,13 @@
+{-- |
+This module is concerned with individual posts.
+
+It adds three new classes of functionality to Hakyll. Firstly,
+pages are routed as `/year/month/day/post-title/index.html` instead of
+being routed as ``/posts/year-month-day-title.html`. Secondly, it has
+code to detect and filter out drafts from built websites. Thirdly it
+adds tags to the post context, and only exposts @postContextWithTags@
+rather than the usual @postContext@
+-}
 module Site.Meta ( dateRoute
                  , filterDrafts
                  , filterDraftItems

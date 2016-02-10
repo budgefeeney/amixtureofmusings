@@ -1,3 +1,8 @@
+{-- |
+ This module groups posts by year, so that the archive page can
+ in turn display posts grouped by year, which is a little more
+ readable.
+-}
 module Site.Archive (archiveContext) where
 
 import Control.Applicative (empty)
