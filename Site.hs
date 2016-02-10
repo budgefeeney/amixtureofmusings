@@ -86,7 +86,7 @@ main = do
           >>= loadAndApplyTemplate "templates/tag.html" ctx
           >>= relativizeUrls
 
-    create ["feed.xml"] $ do
+    create ["atom.xml"] $ do
       route idRoute
       compile $ do
         let feedContext = bodyField "description" <> defaultContext
@@ -94,6 +94,15 @@ main = do
           >>= filterDraftItems
           >>= fmap (take 10) . recentFirst
           >>= renderAtom feedConfig feedContext
+
+    create ["rss.xml"] $ do
+      route idRoute
+      compile $ do
+        let feedContext = bodyField "description" <> defaultContext
+        loadAllSnapshots "posts/*" "content"
+          >>= filterDraftItems
+          >>= fmap (take 10) . recentFirst
+          >>= renderRss feedConfig feedContext
 
 -- | A Compiler which uses HJS-Min to minify Javascript
 minifyJSCompiler :: Compiler (Item [Char])
