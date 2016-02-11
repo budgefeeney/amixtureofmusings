@@ -34,7 +34,7 @@ main = do
       route   idRoute
       compile minifyJSCompiler
 
-    sequence_ $ fmap staticFile
+    sequence_ $ fmap idRouteAndCopyCompiler
       [ "images/*", "favicon.png", ".htaccess" ]
 
     match "templates/*" $ compile templateCompiler
@@ -62,13 +62,16 @@ main = do
           >>= loadAndApplyTemplate "templates/post.html" ((postContextWithTags tags) <> siteContext)
           >>= stripIndexSuffix
 
-
     postIndex "posts/*.md" 5 fullContext
 
     create ["archive/index.html"] $ do
       route idRoute
       compile $ do
-        let ctx = archiveContext "posts/*" <> fullContext
+        cloud <- renderTagCloud 80 140 tags
+        let ctx = archiveContext "posts/*"
+                  <> constField "tagcloud" cloud
+                  <> fullContext
+
         makeItem ""
           >>= loadAndApplyTemplate "templates/archive.html" ctx
           >>= stripIndexSuffix
@@ -113,8 +116,8 @@ minifyJSCompiler = do
     minifyJS = C.unpack . minify . C.pack . itemBody
 
 -- | Applies an ID route and copyFileCompiler to the given pattern
-staticFile :: Pattern -> Rules ()
-staticFile pattern =
+idRouteAndCopyCompiler :: Pattern -> Rules ()
+idRouteAndCopyCompiler pattern =
   match pattern $ do
     route idRoute
     compile copyFileCompiler
