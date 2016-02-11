@@ -7,7 +7,7 @@ tags: Haskell, Programming
 
 I've been playing around with Haskell recently as a way of clearing my head from the day job doing Python. It turns out getting a working setup is surprisingly difficult, so I've written this guide to help those attempting to learn Haskell get started. It explains:
 
-1. How to [install the Haskell compiler and development tools](#setting-up-haskell). The tools include `cabal` build & dependency-management app; the `ghc-mod` IDE support tool; the `stylish-haskell` code-formatter; and the `hi` ("Haskell init") project-scaffolding tool
+1. How to [install the Haskell compiler and development tools](#setting-up-haskell). The tools include the `cabal` build & dependency-management app; the `ghc-mod` IDE support tool; the `stylish-haskell` code-formatter; and the `hi` ("Haskell init") project-scaffolding tool
 2. How to install and configure an [IDE](#installing-an-ide) and [REPL](#the-ihaskell-repl)
 3. How to use the `hi` (Haskell Init) project-scaffolding tool to [initialise a new project](#creating-your-first-project).
 4. Which are the [best libraries](#recommended-libraries) for regular-expressions, database access, validation etc.
@@ -28,7 +28,7 @@ sudo xcode-select --install
 sudo xcodebuild -license
 ```
 
-Next, Mac users, and also Windows users, sholud install the [Haskell Platform](https://www.haskell.org/platform/).
+Next, Mac users, and also Windows users, should install the [Haskell Platform](https://www.haskell.org/platform/).
 
 For Linux users, of course, the first option is their native package manager; however if that doesn't have GHC 7.10, then they too should use the Haskell platform.
 
@@ -47,13 +47,13 @@ When you execute the commands above it will tell you where all applications inst
 
 ### A Mac(Ports) Conundrum
 
-Haskell and MacPorts don't always play well together. Some third-party Haskell libraries (or "packages") when being built will opportunistically link to libraries in the MacPorts installation directory, `/opt/local`. This directory includes libraries duplicating those on the system, notably `libiconv`. This can then lead to linker errors when the wrong iconv library is picked up by the linker. You can read [an in-depth description of the MacPorts library problem here](http://blog.omega-prime.co.uk/?p=96), but the short answer is that if you have linker trouble when building an application, particularly if it involves iconv and HSBase, you may want to try amending the project configuration and rebuilding by typig
+Haskell and MacPorts don't always play well together. Some third-party Haskell libraries (or "packages") when being built will opportunistically link to libraries in the MacPorts installation directory, `/opt/local`. This directory includes libraries duplicating those on the system, notably `libiconv`. This can then lead to linker errors when the wrong iconv library is picked up by the linker. You can read [an in-depth description of the MacPorts library problem here](http://blog.omega-prime.co.uk/?p=96), but the short answer is that if you have linker trouble when building an application, particularly if it involves iconv and HSBase, you may want to try amending the project configuration and rebuilding by typing
 
 ```
 cabal configure --extra-lib-dir=/usr/lib
 cabal build
 ```
-This will force a search of `/usr/lib` is before the MacPorts' directory. For whatever reason, the [relocatable GHC package](https://ghcformacosx.github.io/) is less affected by this, but as of February 2016, it does not work on Mac OS X "El Capitan".
+This will force a search of `/usr/lib` before the MacPorts' directory. For whatever reason, the [relocatable GHC package](https://ghcformacosx.github.io/) is less affected by this, but as of February 2016, it does not work on Mac OS X "El Capitan".
 
 
 ## Installing an IDE
