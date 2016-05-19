@@ -10,8 +10,8 @@ I've been playing around with Haskell recently as a way of clearing my head from
 1. How to [install the Haskell compiler and development tools](#setting-up-haskell). The tools include the `cabal` build & dependency-management app; the `ghc-mod` IDE support tool; the `stylish-haskell` code-formatter; and the `hi` ("Haskell init") project-scaffolding tool
 2. How to install and configure an [IDE](#installing-an-ide) and [REPL](#the-ihaskell-repl)
 3. How to use the `hi` (Haskell Init) project-scaffolding tool to [initialise a new project](#creating-your-first-project).
-4. Which are the [best libraries](#recommended-libraries) for regular-expressions, database access, validation etc.
-5. What are the [best Haskell learning-resources](#actually-learning-haskell)
+4. What are the [best Haskell learning-resources](#actually-learning-haskell)
+<!--4. Which are the [best libraries](#recommended-libraries) for regular-expressions, database access, validation etc.-->
 
 There are some tips for Mac users in particular.
 
@@ -53,7 +53,7 @@ Haskell and MacPorts don't always play well together. Some third-party Haskell l
 cabal configure --extra-lib-dir=/usr/lib
 cabal build
 ```
-This will force a search of `/usr/lib` before the MacPorts' directory. For whatever reason, the [relocatable GHC package](https://ghcformacosx.github.io/) is less affected by this, but as of February 2016, it does not work on Mac OS X "El Capitan".
+This will force a search of `/usr/lib` before the MacPorts' directory. For whatever reason, the [relocatable GHC package](https://ghcformacosx.github.io/) is less affected by this but that does not currently (February 2016) work on Mac OS X "El Capitan".
 
 
 ## Installing an IDE
@@ -115,7 +115,7 @@ ihaskell install
 
 Once installed, launch the notebook server by typing `ipython notebook`. Despite the name, you will see you will have the option of creating either Python or Haskell notebooks.
 
-For OS X users you can use [Homebrew to install Python, Pip to install ipython](https://joernhees.de/blog/2014/02/25/scientific-python-on-mac-os-x-10-9-with-homebrew/), and then cabal to install IHaskell as shown above. Should you try to install Python and IPython using MacPorts, you immediately encounter the usual MacPorts / system library linking issues. The easiest, though spectacularly wasteful, solution to this is to install [Kronos Haskell](http://www.kronosnotebook.com/haskell) which is a 2GB app bundle with its own copies of Python, Jupyter, GHC, Cabal and the usual Haskell libraries.
+For OS X users you can use [Homebrew to install Python, then Pip to install ipython](https://joernhees.de/blog/2014/02/25/scientific-python-on-mac-os-x-10-9-with-homebrew/), and finally cabal to install IHaskell as shown above. Should you try to install Python and IPython using MacPorts, you immediately encounter the usual MacPorts / system library linking issues. The easiest, though spectacularly wasteful, solution to this is to install [Kronos Haskell](http://www.kronosnotebook.com/haskell) which is a 2GB app bundle with its own copies of Python, Jupyter, GHC, Cabal and the usual Haskell libraries.
 
 For windows users, the Kronos option is by far and away the simplest approach.
 
@@ -185,7 +185,7 @@ Once you've learnt the core language, you will likely find  [What I wish I knew 
 
 Similarly the [24 Days of ...](https://ocharles.org.uk/blog/) guides by Oliver Charles offer a nice introduction to the various Haskell packages and extensions that are commonly used.
 
-
+<!--
 ## Recommended Libraries
 
 All Haskell libraries, or "packages", can be found on [Hackage](http://hackage.haskell.org). There are no limits on who can upload packages: indeed there is a culture of uploading packages early to see if they get traction. Consequently there are a lot of incomplete, amateur packages; there are multiple packages for every use-case; and the quality of packages varies considerably.
@@ -211,8 +211,9 @@ For common cases my recommendations are:
 
 * For **concurrency** there are many options, so the best advice is to read [this section on concurrency](http://dev.stephendiehl.com/hask/#concurrency) from [What I wish I knew when learning Haskell](http://dev.stephendiehl.com/hask/). In general usage, you'll probably find the [async library](https://hackage.haskell.org/package/async) the easiest to use. There's an [example here](http://dev.stephendiehl.com/hask/#async) and a short [tutorial here](https://ocharles.org.uk/blog/posts/2013-12-13-24-days-of-hackage-async.html).
 
-
+-->
 
 ---
-
+<small>
  1. <a name="fn1" /> Specifically the eponymous constructors for the `State`, `Writer` and `Reader` monads have all been hidden, and instead replaced with lower-case functions `state`, `writer` and `reader`, affecting the code examples in chapter 13.
+</small>
