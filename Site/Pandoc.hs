@@ -1,6 +1,6 @@
 {-- |
  This overrides the @pandocCompiler@ function from Hakyll with one which
- enabled MathML, enables highlighted code-blocks, disables HTML5 figures
+ enables MathML, enables highlighted code-blocks, disables HTML5 figures
  and works around CRLFs in files, which confused Pandoc.
 -}
 module Site.Pandoc (pandocCompiler) where
