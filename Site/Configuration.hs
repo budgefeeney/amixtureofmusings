@@ -13,6 +13,7 @@ ignoreFile' path        = ignoreFile defaultConfiguration path
 config :: Configuration
 config = defaultConfiguration { ignoreFile = ignoreFile'
                               , previewHost = "0.0.0.0"
+                              , deployCommand = "rsync -avz -e ssh _site bfeeney@amixtureofmusings.com:/var/www/html"
                               }
 
 -- Details for the atom feed.
