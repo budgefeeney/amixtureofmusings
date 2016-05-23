@@ -24,11 +24,11 @@ Now lets say this is all part of your game state, which you also define via a ty
 
 ```haskell
 class GameState g where
-  getPlayer :: g -> Player
+  getPlayer :: (Player p) => g -> p
   getMonsterPositions :: g -> [Position]
 ```
 
-So far, so good. All of this compiles. We can even create implementations:
+So far, so good. All of this compiles. Next we create the implementations:
 
 ```haskell
 data PlayerData = PlayerData { _pos :: Position, ... }
@@ -43,23 +43,26 @@ instance GameState GameStateData where
   getMonsterPositions (GameStateData _ mPoses) = mPoses
 ```
 
-This still compiles. The problem occurs when you try to write a function using these classes:
+We want use this to write a wholly generic function like follows
 
 ```haskell
-checkForCollisions :: GameState -> [Position] -> Bool
+checkForCollisions :: GameState s => s -> [Position] -> Bool
 checkForCollisions s ps =
   let
     p    = getPlayer s
-    pPos = playerPosition player
+    pPos = playerPosition p
   in
-  foldl False (\a oPos -> a || pPos == oPos) ps
+  pPos `elem` ps
 ```
 
-This function will not compile. The error will be something along the lines of `Could not deduce (p ~ Player)`
+The problem is that none of this compiles!
+
+* The implementation of `GameState` for `GameStateData` won't compile, you'll get an error of `Could not deduce (p ~ PlayerData)`.
+* The code for checkForCollisions won't compile, with a similar error: `Could not deduce (Player p0) arising from a use of ‘getPlayer’`
 
 ## Polymorphism vs Monomorphism
 
-To someone coming from the imperative object-orientated world, this seems mysterious, as one could trivially achieve the same effect using interfaces.
+To someone coming from the imperative object-orientated world, this seems mysterious, as one could trivially achieve the same effect in imperative OOP languages using interfaces.
 
 The issue is the difference between polymorphism and monomorphism.
 
@@ -70,7 +73,7 @@ interace MyInterface {
   public int someFunction();
 }
 
-public static <I extends MyInterface> I genericFunc(int a) { ... }
+public static MyInterface genericFunc(int a) { ... }
 
 public static void int callGenericFunc() {
   MyInterface mi = genericFunc(42);
@@ -91,7 +94,7 @@ The following Haskell code looks very similar:
 class MyTypeClass t where
   someFunction :: t -> Int
 
-genericFunc :: (MyTypeClass t) :: Int -> t
+genericFunc :: (MyTypeClass t) => Int -> t
 genericFunc = ...
 
 callGenericFunc :: Int
@@ -120,13 +123,13 @@ However in order for monomorphism to work, the compiler needs to be able to iden
 If we look at our example again, we can see the problem
 
 ```haskell
-checkForCollisions :: GameState -> [Position] -> Bool
+checkForCollisions :: GameState s => s -> [Position] -> Bool
 checkForCollisions s ps =
   let
     p    = getPlayer s
-    pPos = playerPosition player
+    pPos = playerPosition p
   in
-  foldl False (\a oPos -> a || pPos == oPos) ps
+  pPos `elem` ps
 ```
 
 `GameState` is a generic typeclass, so the compiler will inspect the code that calls `checkForCollisions` to choose the specific implementation.
@@ -135,27 +138,29 @@ The typechecker now looks at `checkForCollision` and sees `getPlayer` returns a 
 
 Remember it's _not_ the implementation of `GameState` for `GameStateData` that must determine the type, it's `checkForCollisions`, so that's where the type-checker looks.
 
-Unfortunately, all the code in `checkForCollisions` is completely generic, so it can't choose a single concrete type: hence `Could not deduce (p ~ Player)`.
+Unfortunately, all the code in `checkForCollisions` is completely generic, so it can't choose a single concrete type: hence `Could not deduce (Player p0)`.
 
-The solution to this to allow the implementation of `GameState` for `GameStateData` to identify the particular type to use, by associating a type with the type-class.
+The solution to this to allow the implementation of `GameState` for `GameStateData` to additionally specify the particular type in the `Player` family to use.
 
-To this this we use the `TypeFamilies` extension.
+To this this we use the `TypeFamilies` extension to associate a `Player` type with the implementation.
 
 First we alter our type-class to add a type placeholder called `PlayerType`
 
 ```haskell
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 class Player (PlayerType s) => GameState s where
   type PlayerType s :: *
   getPlayer :: s -> PlayerType s
+  getMonsterPositions :: s -> [Position]
 ```
 
-Essentially PlayerType is a variable that contains a type rather than a value. Consequently it's annotated with a _kind_ (recall, that the "type of a type" is called a "kind"). In this case the single asterisk means that this should be a concrete type.
+Essentially PlayerType is a variable that contains a type rather than a value. Consequently it's annotated with a _kind_ (recall, that the "type of a type" is called a kind). In this case the single asterisk means that this should be a concrete type.
 
 Associated types must be tied (i.e. associated with) the type defined in the type class, which is why it's `PlayerType s` and not just `PlayerType`.
 
-However we can still constrain the associated type to be in our `Player` type-class as you can see.
+However we can still constrain the associated type to be in our `Player` type-class as you can see. We need the `FlexibleContexts` extension in order to perform this constraint however.
 
 You can have as many associated types as you want by the way, I've just used one in this example for simplicity.
 
@@ -170,15 +175,17 @@ instance GameState GameStateData where
   getMonsterPositions (GameStateData _ mPoses) = mPoses
 ```
 
-This then solves our problem. The code that called `checkForCollisions`  has already chosen the particular type in the `GameState` family, and lets say it's `GameStateData`.
+This then solves our problem. The code that called `checkForCollisions`  has already chosen the particular type in the `GameState` family, and lets assume that it's `GameStateData`.
 
-The compiler next looks at `checkForCollisions`, but now it knows that sees that for the `GameStateData` implementaton of the `GameState` class, the associated type used for `getPlayer` is `PlayerData`, and which is in the `Player` typeclass. Hence the code type-checks, and the compiler has the information it needs to monomorphise it.
+The compiler next looks at `checkForCollisions`, but now it knows that sees that for the `GameStateData` implementation of the `GameState` class, the associated type used for `getPlayer` is `PlayerData`, and it's in the `Player` typeclass. Hence the code type-checks, and the compiler has the information it needs to monomorphise it.
+
+And we've managed to do this while keeping `checkForCollisions` completely generic.
 
 ## Final Thoughts
 
-This only really rears it's head once you start making extensive use of type-classes. Since defining and altering types is so easy in Haskell, you can argue that there's no need for typeclasses. In fact, since abstraction bulks out code, and so can make it harder to read, there's an argument to be made _against_ the use of typeclasses.
+This only really rears it's head once you start making extensive use of type-classes. Since defining and altering types is so easy in Haskell, you can argue that there's no need for typeclasses. In fact, since abstraction bulks out code, and so can make it harder to read, there's an argument to be made _against_ the use of typeclasses for abstraction.
 
-However there are many Haskellers that use typeclasses as a way to write code in an "effectful" style (emulating the effects features in other pure functional languages like PureScript) and it's here that they can run into issues, as I did.
+However there are many Haskellers that use typeclasses as a way to write code their monadic code in an "effectful" style (emulating the effects features in pure functional languages such as [PureScript](http://www.purescript.org/learn/eff/)) and it's here that they can run into issues, as I did.
 
 In my case, I had a function like
 
