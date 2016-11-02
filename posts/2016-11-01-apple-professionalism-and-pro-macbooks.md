@@ -44,6 +44,4 @@ Instead the new Macbook Pro is a scaled up Macbook with [a medicore performance 
  3. <a name="fn-from-scratch" />OpenCL forks and plugins exist for some of these libraries, but they're not reliable and often incomplete. The other approach of course is to write ones own library from scratch, but why spend $2999 on a machine that *increases* the amount of work one has to do.
  4. <a name="fn-career" />Albeit one who's finishing a four-year break where he did a PhD
  5. <a name="fn-programmers-and-the-pro" />Though even some programmers are unhappy with the new Macbook Pro, as they believe they need 32GB to do proper development. I confess I have to wonder what sort of app, and what class of implementation, needs more than 10GB to debug or compile.
-
-
- Figure double-retweet ID issue, affects URL removal
+ 
