@@ -85,7 +85,7 @@ What we are saying is that
 
  * There is a family of types that implement `MyInterface`
  * `genericFunc` will return a value of a single, specific type in that family[[1]](#fn1)
- * `callGenericFunc` must be able to handle any value in that family, regardless of its underlying representation (i.e. it must be polymorphic)
+ * `callGenericFunc` must be able to handle a value of any type in the `MyInterface` family, regardless of the underlying representation (i.e. it must be polymorphic)
  * It is `genericFunc` that chooses the particular type.
 
 The following Haskell code looks very similar:
@@ -107,7 +107,7 @@ In the Haskell version, we are saying that
 
  * There is a family of types that implement `MyTypeClass`
  * `genericFunc` can return a value of _any_ type in that family. <br>Whereas the Java version returned a value of a single specific type.
- * `callGenericFunc` will only work on _one specific type_ in that family.<br>Whereas the Java version worked on _any_ value in the family
+ * `callGenericFunc` will only work on _one specific type_ in that family.<br>Whereas the Java version worked on values of _any type_ in the family
  * It is `callGenericFunc` which decides which type `genericFunc` should return.<br>Whereas the Java version had `genericFunc` make the decision
 
 So while the Java compiler renders this generic code _polymorphic_, by adapting `callGenericFunc` to work with any value in the `MyInterface` family, Haskell makes the code _monomorphic_ by choosing a single specific type in the `MyTypeClass` family and generating variants of `genericFunc` and `callGenericFunc` which work on that type.
@@ -134,13 +134,13 @@ checkForCollisions s ps =
 
 `GameState` is a generic typeclass, so the compiler will inspect the code that calls `checkForCollisions` to choose the specific implementation.
 
-The typechecker now looks at `checkForCollision` and sees `getPlayer` returns a value of another generic typeclass `Player`.
+Once it's chosen an implementation in the `GameState` family, the typechecker looks at `checkForCollision` and sees `getPlayer` returns a value of another generic typeclass `Player`.
 
-Remember it's _not_ the implementation of `GameState` for `GameStateData` that must determine the type, it's `checkForCollisions`, so that's where the type-checker looks.
+Remember it's _not_ the implementation of `GameState` that must determine the type, it's `checkForCollisions`, so that's where the type-checker looks.
 
 Unfortunately, all the code in `checkForCollisions` is completely generic, so it can't choose a single concrete type: hence `Could not deduce (Player p0)`.
 
-The solution to this to allow the implementation of `GameState` for `GameStateData` to additionally specify the particular type in the `Player` family to use.
+The solution to this to allow the implementation of `GameState` to additionally specify the particular type in the `Player` family to use.
 
 To this this we use the `TypeFamilies` extension to associate a `Player` type with the implementation.
 
@@ -156,7 +156,7 @@ class Player (PlayerType s) => GameState s where
   getMonsterPositions :: s -> [Position]
 ```
 
-Essentially PlayerType is a variable that contains a type rather than a value. Consequently it's annotated with a _kind_ (recall, that the "type of a type" is called a kind). In this case the single asterisk means that this should be a concrete type.
+Essentially `PlayerType` is a variable that contains a type rather than a value. Consequently it's annotated with a _kind_ (recall, that the "type of a type" is called a kind). In this case the single asterisk means that this should be a concrete type.
 
 Associated types must be tied (i.e. associated with) the type defined in the type class, which is why it's `PlayerType s` and not just `PlayerType`.
 
