@@ -142,7 +142,7 @@ Unfortunately, all the code in `checkForCollisions` is completely generic, so it
 
 The solution to this to allow the implementation of `GameState` to additionally specify the particular type in the `Player` family to use.
 
-To this this we use the `TypeFamilies` extension to associate a `Player` type with the implementation.
+To this this we use the `TypeFamilies` extension.
 
 First we alter our type-class to add a type placeholder called `PlayerType`
 
@@ -175,9 +175,9 @@ instance GameState GameStateData where
   getMonsterPositions (GameStateData _ mPoses) = mPoses
 ```
 
-This then solves our problem. The code that called `checkForCollisions`  has already chosen the particular type in the `GameState` family, and lets assume that it's `GameStateData`.
+This then solves our problem. The code that called `checkForCollisions`  has already chosen the particular type in the `GameState` family, and in this example lets assume the type is `GameStateData`.
 
-The compiler next looks at `checkForCollisions`, but now it knows that sees that for the `GameStateData` implementation of the `GameState` class, the associated type used for `getPlayer` is `PlayerData`, and it's in the `Player` typeclass. Hence the code type-checks, and the compiler has the information it needs to monomorphise it.
+The compiler next looks at `checkForCollisions`, but now it knows from the `GameStateData` implementation that the associated type of `Player` used for `getPlayer` is `PlayerData`. Hence the code type-checks, and the compiler has the information it needs to monomorphise it.
 
 And we've managed to do this while keeping `checkForCollisions` completely generic.
 
